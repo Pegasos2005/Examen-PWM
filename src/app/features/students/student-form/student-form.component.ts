@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+// Añade OnInit al import de Angular core
+import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { StudentService } from '../student.service';
 import { Student } from '../../../core/models/student.model';
@@ -6,45 +7,68 @@ import { Student } from '../../../core/models/student.model';
 @Component({
   selector: 'app-student-form',
   standalone: true,
-  imports: [ReactiveFormsModule], // <-- Imprescindible para que funcione el form
+  imports: [ReactiveFormsModule],
   templateUrl: './student-form.component.html',
   styleUrl: './student-form.component.css'
 })
-export class StudentFormComponent {
+export class StudentFormComponent implements OnInit { // <-- Implementamos OnInit
   private fb = inject(FormBuilder);
   private studentService = inject(StudentService);
 
-  // Creamos el formulario con sus validaciones
+  // Esta variable nos dirá si estamos creando (null) o editando (ID del estudiante)
+  editingId: string | null = null;
+
   studentForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]]
   });
 
-  // Función que se ejecuta al darle al botón Add
+  // Esto se ejecuta al cargar el componente
+  ngOnInit() {
+    // Nos suscribimos al "canal mensajero" del servicio
+    this.studentService.studentToEdit$.subscribe(student => {
+      if (student) {
+        // MODO EDICIÓN: Guardamos el ID y rellenamos el formulario automáticamente
+        this.editingId = student.id || null;
+        this.studentForm.patchValue({
+          name: student.name,
+          email: student.email
+        });
+      } else {
+        // MODO CREACIÓN: Limpiamos todo
+        this.editingId = null;
+        this.studentForm.reset();
+      }
+    });
+  }
+
   onSubmit() {
-    // Si el formulario es válido (no está vacío y el email es correcto)
     if (this.studentForm.valid) {
-      // Extraemos los datos
-      const newStudent: Student = {
+      const studentData: Student = {
         name: this.studentForm.value.name!,
         email: this.studentForm.value.email!
       };
 
-      // Llamamos al servicio
-      this.studentService.addStudent(newStudent)
-        .then(() => {
-          console.log('¡Estudiante guardado en Firebase!');
-          this.studentForm.reset(); // Limpiamos el formulario automáticamente
-        })
-        .catch(error => console.error('Error al guardar:', error));
+      if (this.editingId) {
+        // Si hay un ID, significa que estamos EDITANDO
+        this.studentService.updateStudent(this.editingId, studentData).then(() => {
+          this.onClear(); // Limpiamos al terminar
+        });
+      } else {
+        // Si no hay ID, estamos CREANDO
+        this.studentService.addStudent(studentData).then(() => {
+          this.onClear();
+        });
+      }
     } else {
-      // Si no es válido, marcamos todos los campos para que salte el error visual (si lo tuvieras)
       this.studentForm.markAllAsTouched();
     }
   }
 
-  // Función para el botón Clear
   onClear() {
     this.studentForm.reset();
+    this.editingId = null;
+    // Le decimos al servicio que ya no estamos editando nada
+    this.studentService.setStudentToEdit(null);
   }
 }

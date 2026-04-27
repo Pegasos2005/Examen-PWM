@@ -14,7 +14,9 @@
     </div>
 
     <div class="actions">
-      <button type="submit" class="btn-primary" [disabled]="studentForm.invalid">Add</button>
+      <button type="submit" class="btn-primary" [disabled]="studentForm.invalid">
+        {{ editingId ? 'Update' : 'Add' }}
+      </button>
       <button type="button" class="btn-secondary" (click)="onClear()">Clear</button>
     </div>
 

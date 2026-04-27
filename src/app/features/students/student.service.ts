@@ -1,23 +1,57 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore'; // Añade collectionData
+// Añadimos doc, deleteDoc y updateDoc
+import { Firestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc } from '@angular/fire/firestore';
 import { Student } from '../../core/models/student.model';
-import { Observable } from 'rxjs'; // Añade Observable
+import { Observable, BehaviorSubject } from 'rxjs'; // Importamos BehaviorSubject
 
 @Injectable({
   providedIn: 'root'
 })
 export class StudentService {
   private firestore = inject(Firestore);
-  private studentCollection = collection(this.firestore, 'students');
 
-  // CREAR (El que ya teníamos)
-  addStudent(student: Student) {
-    return addDoc(this.studentCollection, student);
+  // --- MENSAJERO PARA EL MODO EDICIÓN ---
+  // Este "canal" guardará el estudiante que queramos editar
+  private studentToEditSubject = new BehaviorSubject<Student | null>(null);
+  studentToEdit$ = this.studentToEditSubject.asObservable();
+
+  // Función para meter un estudiante en el canal
+  setStudentToEdit(student: Student | null) {
+    this.studentToEditSubject.next(student);
   }
 
-  // LEER (El nuevo)
+  // --- MÉTODOS CRUD ---
+
+  // CREAR (El que ya tienes)
+  addStudent(student: Student) {
+    const studentCollection = collection(this.firestore, 'students');
+    return addDoc(studentCollection, student);
+  }
+
+  // LEER (El Método Antibombas que ya tienes)
   getStudents(): Observable<Student[]> {
-    // collectionData lee la colección y le pedimos que inyecte el ID de Firebase en la propiedad 'id'
-    return collectionData(this.studentCollection, { idField: 'id' }) as Observable<Student[]>;
+    const studentCollection = collection(this.firestore, 'students');
+    return new Observable(observer => {
+      const unsubscribe = onSnapshot(studentCollection, (snapshot) => {
+        const students: Student[] = [];
+        snapshot.forEach(doc => {
+          students.push({ id: doc.id, ...doc.data() } as Student);
+        });
+        observer.next(students);
+      }, (error) => observer.error(error));
+      return () => unsubscribe();
+    });
+  }
+
+  // ACTUALIZAR (Nuevo)
+  updateStudent(id: string, student: Partial<Student>) {
+    const docRef = doc(this.firestore, `students/${id}`);
+    return updateDoc(docRef, student);
+  }
+
+  // BORRAR (Nuevo)
+  deleteStudent(id: string) {
+    const docRef = doc(this.firestore, `students/${id}`);
+    return deleteDoc(docRef);
   }
 }

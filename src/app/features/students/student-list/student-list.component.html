@@ -17,8 +17,8 @@
           <td>{{ student.name }}</td>
           <td>{{ student.email }}</td>
           <td>
-            <button class="btn-edit">Edit</button>
-            <button class="btn-delete">Delete</button>
+            <button class="btn-edit" (click)="onEdit(student)">Edit</button>
+            <button class="btn-delete" (click)="onDelete(student.id)">Delete</button>
           </td>
         </tr>
       } @empty {
