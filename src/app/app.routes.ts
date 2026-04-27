@@ -1,16 +1,12 @@
 import { Routes } from '@angular/router';
-import { StudentListComponent } from './features/students/student-list/student-list.component';
-import { SubjectListComponent } from './features/subjects/subject-list/subject-list.component';
-import { GradeListComponent } from './features/grades/grade-list/grade-list.component';
+import { CustomerListComponent } from './features/customers/customer-list/customer-list.component';
+import { ProductListComponent } from './features/products/product-list/product-list.component';
+import { OrderListComponent } from './features/orders/order-list/order-list.component';
 
 export const routes: Routes = [
-  { path: 'students', component: StudentListComponent },
-  { path: 'subjects', component: SubjectListComponent },
-  { path: 'grades', component: GradeListComponent },
-
-  // Ruta por defecto: si el usuario entra a la raíz ('/'), lo mandamos a estudiantes
-  { path: '', redirectTo: '/students', pathMatch: 'full' },
-
-  // Ruta comodín (opcional, pero buena práctica): si escribe una URL que no existe
-  { path: '**', redirectTo: '/students' }
+  { path: 'customers', component: CustomerListComponent },
+  { path: 'products', component: ProductListComponent },
+  { path: 'orders', component: OrderListComponent },
+  { path: '', redirectTo: '/customers', pathMatch: 'full' },
+  { path: '**', redirectTo: '/customers' }
 ];

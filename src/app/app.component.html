@@ -1,13 +1,13 @@
-<header>
-  <nav>
-    <ul style="display: flex; gap: 20px; list-style: none; padding: 1rem; background: #f0f0f0;">
-      <li><a routerLink="/students">Estudiantes</a></li>
-      <li><a routerLink="/subjects">Asignaturas</a></li>
-      <li><a routerLink="/grades">Calificaciones</a></li>
-    </ul>
-  </nav>
-</header>
-
-<main style="padding: 20px;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container">
+    <a class="navbar-brand" href="#">Examen Grupo 41</a>
+    <div class="navbar-nav">
+      <a class="nav-link" routerLink="/customers">Customers</a>
+      <a class="nav-link" routerLink="/products">Products</a>
+      <a class="nav-link" routerLink="/orders">Orders</a>
+    </div>
+  </div>
+</nav>
+<div class="container">
   <router-outlet></router-outlet>
-</main>
+</div>
