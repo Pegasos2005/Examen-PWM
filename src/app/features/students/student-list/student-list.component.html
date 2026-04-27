@@ -1,0 +1,31 @@
+<app-student-form></app-student-form>
+
+<div class="card">
+  <h2>Students List</h2>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (student of students$ | async; track student.id) {
+        <tr>
+          <td>{{ student.name }}</td>
+          <td>{{ student.email }}</td>
+          <td>
+            <button class="btn-edit">Edit</button>
+            <button class="btn-delete">Delete</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="3" style="text-align: center;">No hay estudiantes guardados.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
