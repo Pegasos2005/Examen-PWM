@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { CustomerListComponent } from './features/customers/customer-list/customer-list.component';
-import { ProductListComponent } from './features/products/product-list/product-list.component';
-import { OrderListComponent } from './features/orders/order-list/order-list.component';
+import { TeacherListComponent } from './features/teachers/teacher-list/teacher-list.component';
+import { CourseListComponent } from './features/courses/course-list/course-list.component';
+import { AssignmentListComponent } from './features/assignments/assignment-list/assignment-list.component';
 
 export const routes: Routes = [
-  { path: 'customers', component: CustomerListComponent },
-  { path: 'products', component: ProductListComponent },
-  { path: 'orders', component: OrderListComponent },
-  { path: '', redirectTo: '/customers', pathMatch: 'full' },
-  { path: '**', redirectTo: '/customers' }
+  { path: 'teachers', component: TeacherListComponent },
+  { path: 'courses', component: CourseListComponent },
+  { path: 'assignments', component: AssignmentListComponent },
+  { path: '', redirectTo: '/teachers', pathMatch: 'full' },
+  { path: '**', redirectTo: '/teachers' }
 ];
