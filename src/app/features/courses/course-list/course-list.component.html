@@ -1,1 +1,31 @@
-<p>course-list works!</p>
+<div class="row">
+  <div class="col-md-4">
+    <app-course-form></app-course-form>
+  </div>
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header bg-primary text-white">Courses List</div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+          <tr><th>Title</th><th>Credits</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            @for (course of courses$ | async; track course.id) {
+              <tr>
+                <td>{{ course.title }}</td>
+                <td>{{ course.credits }}</td>
+                <td>
+                  <button class="btn btn-sm btn-warning me-2" (click)="onEdit(course)">Edit</button>
+                  <button class="btn btn-sm btn-danger" (click)="onDelete(course.id)">Delete</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="text-center">No courses yet</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

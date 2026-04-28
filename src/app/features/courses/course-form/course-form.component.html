@@ -1,1 +1,21 @@
-<p>course-form works!</p>
+<div class="card">
+  <div class="card-header bg-secondary text-white">
+    {{ editingId ? 'Edit Course' : 'Add Course' }}
+  </div>
+  <div class="card-body">
+    <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control" formControlName="title">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Credits</label>
+        <input type="number" class="form-control" formControlName="credits">
+      </div>
+      <button type="submit" class="btn btn-success me-2" [disabled]="courseForm.invalid">
+        {{ editingId ? 'Update' : 'Add' }}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="onClear()">Clear</button>
+    </form>
+  </div>
+</div>
